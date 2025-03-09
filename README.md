@@ -1,5 +1,3 @@
-# browser-support-tool
-Simple Chrome extension with a recognizable UI to assist end users with clearing cookies and cache, save screenshots and capture HAR files for troubleshooting
 # Browser Support Tool
 
 A Chrome extension that provides essential troubleshooting tools for web applications. This tool helps users and support teams diagnose browser-related issues quickly and efficiently.

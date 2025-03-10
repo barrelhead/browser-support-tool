@@ -1,84 +1,83 @@
 # Browser Support Tool
 
-A Chrome extension that provides essential troubleshooting tools for web applications. This tool helps users and support teams diagnose browser-related issues quickly and efficiently.
+A Chrome extension designed to assist with troubleshooting and debugging web applications by providing a simple interface for common support tasks.
+
+## Version 1.1
 
 ## Features
 
 ### 1. Clear Browser Data
-Easily clear various types of browser data with customizable time ranges:
-- Cookies
-- Cache
-- Local Storage
-- History
+- Clear cookies, cache, localStorage, and browsing history
+- Select time range (last hour, day, week, month, or all time)
+- Choose which types of data to clear
+- Get instant feedback on success/failure
 
-### 2. Network Capture
-Capture and download network activity in HAR (HTTP Archive) format:
-- Start and stop network recording
-- Compatible with standard HAR analyzers
-- Helps diagnose API calls, requests, and responses
+### 2. Network Capture (HAR Files)
+- Record all network activity in the current tab
+- Save as industry-standard HAR (HTTP Archive) files
+- Includes all requests, responses, headers, and timing information
+- Timestamped filenames for easy organization
 
-### 3. Screenshot Capture
-Take screenshots of the current page:
-- One-click screenshot capture
-- Automatic download with timestamp
-- Perfect for documenting errors or issues
-
-## Installation
-
-### From Source (Developer Mode)
-1. Download or clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in the top-right corner)
-4. Click "Load unpacked" and select the extension directory
-5. The extension will appear in your toolbar
-
-### From Chrome Web Store
-*Coming Soon*
+### 3. Screen Capture
+- **Screenshots**: Instantly capture the visible area of the current tab
+- **Video Recording** (NEW): Record up to 5 minutes of screen activity
+  - Includes audio capture
+  - Saves in WebM format for high quality with reasonable file size
+  - Timestamped filenames
 
 ## How to Use
 
-### Clearing Browser Data
-1. Select the types of data you want to clear (Cookies, Cache, etc.)
-2. Choose a time range (Last hour, Last day, Last month, etc.)
+### Clear Browser Data
+1. Select which data types to clear (cookies, cache, localStorage, history)
+2. Choose a time range from the dropdown
 3. Click "Clear Data"
-4. You'll see a confirmation message when the data is cleared
 
-### Capturing Network Activity
-1. Navigate to the page you want to analyze
-2. Click the extension icon to open the popup
-3. Click "Start" to begin recording network activity
-4. Perform the actions you want to analyze
-5. Click "Stop & Download" to save the HAR file
-6. The HAR file can be analyzed with tools like:
-   - [Google's HAR Analyzer](https://toolbox.googleapps.com/apps/har_analyzer/)
-   - [HAR Viewer](https://www.softwareishard.com/har/viewer/)
+### Network Capture
+1. Navigate to the tab you want to capture
+2. Click "Start" to begin recording network activity
+3. Perform the actions you want to capture
+4. Click "Stop & Download" to save the HAR file
+   - Note: HAR Capture is tab-specific. If you navigate away, you need to return to the same tab to stop the capture.
 
-### Taking Screenshots
-1. Navigate to the page you want to capture
-2. Click the extension icon
-3. Click "Take Screenshot"
-4. The screenshot will automatically download with a timestamp in the filename
+### Screen Capture
+- **For Screenshots**:
+  1. Navigate to the tab you want to capture
+  2. Click "Take Screenshot"
+  3. Save the PNG file when prompted
 
-## Use Cases
+- **For Video Recording**:
+  1. Navigate to the tab where you want to begin recording
+  2. Click "Record Video"
+  3. Select which screen/window/tab to share when prompted
+  4. Navigate freely during recording
+  5. Click "Stop Recording" when finished (recording automatically stops after 5 minutes)
+  6. Save the WebM file when prompted
 
-- **For Support Teams**: Quickly gather diagnostic information from users
-- **For Developers**: Debug network issues and reproduce errors
-- **For QA Testing**: Document bugs with screenshots and network data
-- **For End Users**: Clear browser data without navigating through complex settings
+## Technical Considerations
 
-## Browser Compatibility
+- You can only have 1 HAR capture happening at a time
+- HAR Capture is tab-specific (if you start it in tab A, and go to tab B, you need to go back to A to stop and save)
+- Video recordings are limited to 5 minutes to maintain reasonable file sizes
+- The extension requires specific Chrome permissions:
+  - cookies, browsingData, storage, debugger, tabs, activeTab, downloads
 
-- Chrome 88+
-- Edge (Chromium-based) 88+
+## Installation
 
-## Privacy
+### Developer Mode (for testing)
+1. Download or clone the extension files
+2. Open Chrome and navigate to chrome://extensions/
+3. Enable "Developer mode" in the top-right corner
+4. Click "Load unpacked" and select the extension directory
+5. The Browser Support Tool icon should appear in your toolbar
 
-This extension does not collect or transmit any user data. All operations are performed locally within the browser.
+### From Chrome Web Store (for deployment)
+1. Navigate to the Chrome Web Store
+2. Search for "Browser Support Tool"
+3. Click "Add to Chrome"
 
-## Contributing
+## Troubleshooting
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- If HAR capture fails, try refreshing the page and starting again
+- If video recording doesn't start, check if you denied screen sharing permissions
+- Clear browser data options require at least one checkbox to be selected
+- If the extension seems unresponsive, try reloading the extension from chrome://extensions/

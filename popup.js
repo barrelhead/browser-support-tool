@@ -7,7 +7,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const stopCaptureBtn = document.getElementById('stopCapture');
   const captureStatus = document.getElementById('captureStatus');
   const takeScreenshotBtn = document.getElementById('takeScreenshot');
+  const startRecordingBtn = document.getElementById('startRecording');
+  const stopRecordingBtn = document.getElementById('stopRecording');
+  const recordingStatus = document.getElementById('recordingStatus');
+  const recordingTime = document.getElementById('recordingTime');
   const notification = document.getElementById('notification');
+  
+  // Recording variables
+  let recordingTimer = null;
+  let recordingSeconds = 0;
+  let recordingMinutes = 0;
   
   // Make screenshot button accessible in the console for debugging
   window.debugBtn = takeScreenshotBtn;
@@ -44,6 +53,142 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+  // Start recording function
+  function startRecording() {
+    console.log('Starting recording');
+    
+    if (!activeTabId) {
+      console.error('No active tab found');
+      showNotification('Error: No active tab found.', 'error');
+      return;
+    }
+    
+    // Update UI
+    startRecordingBtn.classList.add('hidden');
+    takeScreenshotBtn.classList.add('hidden');
+    stopRecordingBtn.classList.remove('hidden');
+    recordingStatus.classList.remove('hidden');
+    
+    // Reset timer
+    recordingSeconds = 0;
+    recordingMinutes = 0;
+    updateRecordingTimer();
+    
+    // Create a new tab with our recorder page
+    chrome.tabs.create({
+      url: 'recorder.html',
+      active: true
+    }, function(tab) {
+      if (chrome.runtime.lastError) {
+        console.error('Error creating tab:', chrome.runtime.lastError);
+        showNotification('Error: Failed to start recording', 'error');
+        resetRecordingUI();
+        return;
+      }
+      
+      // Start timer
+      recordingTimer = setInterval(updateRecordingTimer, 1000);
+      
+      // Store recording tab ID
+      chrome.storage.local.set({
+        'isRecording': true,
+        'recordingTabId': tab.id,
+        'startTime': Date.now()
+      });
+      
+      // Listen for messages from the recording tab
+      chrome.runtime.onMessage.addListener(function recordingListener(message) {
+        if (message.action === 'recordingComplete') {
+          console.log('Recording completed successfully');
+          
+          // Clean up
+          chrome.runtime.onMessage.removeListener(recordingListener);
+          
+          // Reset UI
+          resetRecordingUI();
+          
+          // Show notification
+          showNotification('Recording saved successfully!', 'success');
+        }
+        else if (message.action === 'recordingError') {
+          console.error('Recording error:', message.error);
+          
+          // Clean up
+          chrome.runtime.onMessage.removeListener(recordingListener);
+          
+          // Reset UI
+          resetRecordingUI();
+          
+          // Show notification
+          showNotification('Error: ' + message.error, 'error');
+        }
+      });
+    });
+  }
+  
+  // Stop recording function
+  function stopRecording() {
+    console.log('Stopping recording');
+    
+    // Get recording tab
+    chrome.storage.local.get(['recordingTabId'], function(data) {
+      if (!data.recordingTabId) {
+        console.error('No recording tab found');
+        resetRecordingUI();
+        return;
+      }
+      
+      // Send message to recording tab to stop
+      chrome.tabs.sendMessage(data.recordingTabId, {
+        action: 'stopRecording'
+      }, function(response) {
+        // Note: response might not come if the tab is processing
+        console.log('Stop recording response:', response);
+      });
+      
+      // Stop the timer
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+      }
+    });
+  }
+  
+  // Update recording timer display
+  function updateRecordingTimer() {
+    recordingSeconds++;
+    if (recordingSeconds >= 60) {
+      recordingMinutes++;
+      recordingSeconds = 0;
+    }
+    
+    // Format time as MM:SS
+    const minutes = String(recordingMinutes).padStart(2, '0');
+    const seconds = String(recordingSeconds).padStart(2, '0');
+    recordingTime.textContent = `${minutes}:${seconds}`;
+    
+    // Check for max recording time warnings (at 4:45, 15 seconds before 5 minute limit)
+    if (recordingMinutes === 4 && recordingSeconds === 45) {
+      showNotification('Recording will automatically stop in 15 seconds', 'error');
+    }
+  }
+  
+  // Reset recording UI
+  function resetRecordingUI() {
+    startRecordingBtn.classList.remove('hidden');
+    takeScreenshotBtn.classList.remove('hidden');
+    stopRecordingBtn.classList.add('hidden');
+    stopRecordingBtn.disabled = false;
+    recordingStatus.classList.add('hidden');
+    recordingTime.textContent = '00:00';
+    
+    // Stop the timer if it's running
+    if (recordingTimer) {
+      clearInterval(recordingTimer);
+      recordingTimer = null;
+    }
+  }
+  
   // Add click handlers with direct event functions instead of references
   console.log('Adding click handlers');
   
@@ -65,6 +210,16 @@ document.addEventListener('DOMContentLoaded', function() {
   takeScreenshotBtn.onclick = function() {
     console.log('Screenshot button clicked');
     takeScreenshot();
+  };
+  
+  startRecordingBtn.onclick = function() {
+    console.log('Start recording button clicked');
+    startRecording();
+  };
+  
+  stopRecordingBtn.onclick = function() {
+    console.log('Stop recording button clicked');
+    stopRecording();
   };
   
   // Active tab ID
@@ -94,81 +249,25 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       });
-  
-  // Screenshot functionality
-  let screenshotDataUrl = null;
-  
-  // Take a screenshot of the current tab
-  function takeScreenshot() {
-    console.log('Attempting to take screenshot');
-    
-    // Show loading state
-    takeScreenshotBtn.disabled = true;
-    showNotification('Preparing screenshot...', 'success');
-    
-    // Send message to background script
-    chrome.runtime.sendMessage({ action: 'captureScreenshot' }, function(response) {
-      // Enable button again
-      takeScreenshotBtn.disabled = false;
       
-      console.log('Screenshot response:', response);
-      
-      if (response && response.success) {
-        showNotification('Screenshot saved successfully!', 'success');
-      } else {
-        const errorMsg = response ? response.error : 'Unknown error';
-        console.error('Screenshot error:', errorMsg);
-        showNotification('Error: ' + errorMsg, 'error');
-      }
-    });
-  }
-  
-  // Download the screenshot
-  function downloadScreenshot() {
-    console.log('Downloading screenshot');
-    
-    if (!screenshotDataUrl) {
-      console.error('No screenshot data available');
-      showNotification('Error: No screenshot data available.', 'error');
-      return;
-    }
-    
-    // Generate filename based on current date/time
-    const now = new Date();
-    const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
-    const filename = 'screenshot_' + timestamp + '.png';
-    
-    // Download the screenshot
-    chrome.downloads.download({
-      url: screenshotDataUrl,
-      filename: filename,
-      saveAs: true
-    }, function(downloadId) {
-      console.log('Screenshot download started, ID:', downloadId);
-      
-      if (chrome.runtime.lastError) {
-        console.error('Download error:', chrome.runtime.lastError);
-        showNotification('Error downloading screenshot: ' + chrome.runtime.lastError.message, 'error');
-      } else {
-        console.log('Screenshot downloaded successfully');
-        showNotification('Screenshot downloaded successfully!', 'success');
-        resetScreenshotUI();
-      }
-    });
-  }
-  
-  // Cancel the screenshot
-  function cancelScreenshot() {
-    console.log('Screenshot cancelled');
-    resetScreenshotUI();
-  }
-  
-  // Reset screenshot UI
-  function resetScreenshotUI() {
-    screenshotPreview.classList.add('hidden');
-    screenshotDataUrl = null;
-    screenshotImage.src = '';
-  }
+      // Check if there's an ongoing recording
+      chrome.storage.local.get(['isRecording', 'recordingTabId'], function(data) {
+        console.log('Recording status from storage:', data);
+        
+        if (data.isRecording) {
+          console.log('Recording is active, updating UI');
+          startRecordingBtn.classList.add('hidden');
+          takeScreenshotBtn.classList.add('hidden');
+          stopRecordingBtn.classList.remove('hidden');
+          recordingStatus.classList.remove('hidden');
+          
+          // Start timer (approximation since we don't know the exact start time)
+          recordingSeconds = 0;
+          recordingMinutes = 0;
+          updateRecordingTimer();
+          recordingTimer = setInterval(updateRecordingTimer, 1000);
+        }
+      });
     } else {
       console.error('No active tab found');
     }
@@ -348,6 +447,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (message.action === 'captureError') {
       showNotification('Error: ' + message.error, 'error');
       resetCaptureUI();
+    }
+    else if (message.action === 'recordingError') {
+      showNotification('Recording error: ' + message.error, 'error');
+      resetRecordingUI();
+    }
+    else if (message.action === 'recordingMaxTimeReached') {
+      showNotification('Maximum recording time reached', 'success');
+      resetRecordingUI();
     }
   });
 });

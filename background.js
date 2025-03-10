@@ -97,6 +97,12 @@ chrome.runtime.onInstalled.addListener(function() {
     harLog = null;
     networkEntries = [];
   }
+  
+  // Reset any existing recording state
+  chrome.storage.local.set({
+    'isRecording': false,
+    'recordingTabId': null
+  });
 });
 
 // Start HAR capture

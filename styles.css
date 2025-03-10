@@ -5,8 +5,6 @@
   --secondary-hover: #494c50; /* Darker gray */
   --accent-color: #34a853; /* Google green */
   --accent-hover: #2d9249; /* Darker green */
-  --portal-color: #ea4335; /* Google red */
-  --portal-hover: #d33426; /* Darker red */
   --text-color: #202124; /* Dark gray for text */
   --light-text: #5f6368; /* Medium gray for secondary text */
   --bg-color: #f1f3f4; /* Light gray background */
@@ -14,6 +12,7 @@
   --border-color: #dadce0;
   --success-color: #34a853; /* Google green */
   --error-color: #ea4335; /* Google red */
+  --recording-color: #ea4335; /* Google red for recording */
   --box-shadow: 0 1px 3px rgba(60, 64, 67, 0.12), 0 1px 2px rgba(60, 64, 67, 0.24);
   --border-radius: 0.5rem;
 }
@@ -186,15 +185,37 @@ button {
   background-color: var(--accent-hover);
 }
 
-.portal-button {
-  background-color: var(--portal-color);
-  color: white;
-  width: 100%;
-  margin-top: auto;
+/* Video recording specific styles */
+.capture-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.portal-button:hover {
-  background-color: var(--portal-hover);
+.capture-buttons button {
+  flex: 1;
+}
+
+#stopRecording {
+  background-color: var(--recording-color);
+}
+
+#stopRecording:hover {
+  background-color: #d33426; /* Darker red */
+}
+
+.recording-indicator {
+  border-top-color: var(--recording-color) !important;
+  animation: pulsate 1s ease-in-out infinite alternate !important;
+}
+
+@keyframes pulsate {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+#recordingTime {
+  font-weight: bold;
+  min-width: 40px;
 }
 
 .status {

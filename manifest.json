@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Browser Support Tool",
-  "version": "1.0",
-  "description": "Simple Chrome extension with a recognizable UI to assist end users with clearing cookies and cache, save screenshots and capture HAR files for troubleshooting",
+  "version": "1.1",
+  "description": "Chrome Extension for clearing cookies and cache, capture screenshots, videos and HAR files for simple debugging and troubleshooting",
   "permissions": [
     "cookies",
     "browsingData",
@@ -30,5 +30,11 @@
   },
   "background": {
     "service_worker": "background.js"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["recorder.html", "recorder.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

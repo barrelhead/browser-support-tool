@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Support Tool - Recording</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f1f3f4;
+      color: #202124;
+      text-align: center;
+      padding: 20px;
+    }
+    .recording-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(60, 64, 67, 0.12), 0 1px 2px rgba(60, 64, 67, 0.24);
+    }
+    h1 {
+      color: #1a73e8;
+      margin-bottom: 20px;
+    }
+    .status {
+      font-size: 18px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .timer {
+      font-size: 36px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    .recording-indicator {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-color: #ea4335;
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 1s infinite alternate;
+    }
+    .instructions {
+      margin: 20px 0;
+      text-align: left;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      line-height: 1.5;
+    }
+    .buttons {
+      margin-top: 30px;
+    }
+    button {
+      padding: 12px 24px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      background-color: #ea4335;
+      color: white;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #d33426;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="recording-container">
+    <h1>Browser Support Tool</h1>
+    
+    <div class="status">
+      <span class="recording-indicator"></span>
+      Currently Recording Screen
+    </div>
+    
+    <div class="timer" id="recordingTime">00:00</div>
+    
+    <div class="instructions">
+      <p><strong>Instructions:</strong></p>
+      <ul>
+        <li>This page is capturing your screen activity.</li>
+        <li>Navigate to the tab you wish to record.</li>
+        <li>Recording will automatically stop after 5 minutes.</li>
+        <li>Click "Stop Recording" when finished to save the file.</li>
+      </ul>
+      <p><strong>Note:</strong> You may be prompted to select which screen or window to share.</p>
+    </div>
+    
+    <div class="buttons">
+      <button id="stopRecording">Stop Recording</button>
+    </div>
+  </div>
+  
+  <script src="recorder.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Browser Support Tool",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Chrome Extension for clearing cookies and cache, capture screenshots, videos and HAR files for simple debugging and troubleshooting",
   "permissions": [
     "cookies",

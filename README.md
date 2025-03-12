@@ -2,7 +2,9 @@
 
 A Chrome extension designed to assist with troubleshooting and debugging web applications by providing a simple interface for common support tasks.
 
-## Version 1.0
+## Version 1.1
+
+_1.1 is a minor update to popup.js, no new functionality is added._
 
 ## Features
 

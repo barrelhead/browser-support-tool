@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
       history: document.getElementById('history').checked
     };
     
-    console.log('Selected options:', options);
+    console.log('Selected options:', JSON.stringify(options));
     
     // Get time range
     const timeRange = document.getElementById('timeRange').value;
@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
         break;
     }
     
-    console.log('Time range:', timeRange, 'Since:', new Date(since));
+    console.log('Time range:', JSON.stringify(timeRange), 'Since:', JSON.stringify(new Date(since)));
     
     // Create removal settings object
     const removalOptions = {

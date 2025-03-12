@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const recordingTime = document.getElementById('recordingTime');
   const notification = document.getElementById('notification');
   
+  // Initialize theme system
+  initTheme();
+  
   // Recording variables
   let recordingTimer = null;
   let recordingSeconds = 0;
@@ -285,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
       history: document.getElementById('history').checked
     };
     
-    console.log('Selected options:', JSON.stringify(options));
+    console.log('Selected options:', options);
     
     // Get time range
     const timeRange = document.getElementById('timeRange').value;
@@ -310,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
         break;
     }
     
-    console.log('Time range:', JSON.stringify(timeRange), 'Since:', JSON.stringify(new Date(since)));
+    console.log('Time range:', timeRange, 'Since:', new Date(since));
     
     // Create removal settings object
     const removalOptions = {
@@ -460,4 +463,91 @@ document.addEventListener('DOMContentLoaded', function() {
       resetRecordingUI();
     }
   });
+  
+  // Theme management functions
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    applyTheme(savedTheme);
+    
+    // Set active state on the correct theme toggle
+    document.querySelectorAll('.theme-option').forEach(option => {
+      if (option.dataset.theme === savedTheme) {
+        option.classList.add('active');
+      } else {
+        option.classList.remove('active');
+      }
+    });
+    
+    // Add event listeners to theme toggles
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const theme = option.dataset.theme;
+        localStorage.setItem('theme', theme);
+        
+        // Update active state
+        document.querySelectorAll('.theme-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+        option.classList.add('active');
+        
+        applyTheme(theme);
+      });
+    });
+    
+    // Listen for system theme changes
+    if (window.matchMedia) {
+      const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      
+      // Set initial state if using system theme
+      if (savedTheme === 'system') {
+        applyThemeBasedOnSystem(colorSchemeQuery.matches);
+      }
+      
+      // Add listener for system theme changes
+      try {
+        // Chrome & Firefox
+        colorSchemeQuery.addEventListener('change', (e) => {
+          if (localStorage.getItem('theme') === 'system') {
+            applyThemeBasedOnSystem(e.matches);
+          }
+        });
+      } catch (e1) {
+        try {
+          // Safari
+          colorSchemeQuery.addListener((e) => {
+            if (localStorage.getItem('theme') === 'system') {
+              applyThemeBasedOnSystem(e.matches);
+            }
+          });
+        } catch (e2) {
+          console.error('Could not add media query listener:', e2);
+        }
+      }
+    }
+  }
+
+  function applyTheme(theme) {
+    console.log('Applying theme:', theme);
+    
+    if (theme === 'system') {
+      // Check system preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyThemeBasedOnSystem(true);
+      } else {
+        applyThemeBasedOnSystem(false);
+      }
+    } else if (theme === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+    } else {
+      document.documentElement.classList.remove('dark-theme');
+    }
+  }
+
+  function applyThemeBasedOnSystem(isDark) {
+    if (isDark) {
+      document.documentElement.classList.add('dark-theme');
+    } else {
+      document.documentElement.classList.remove('dark-theme');
+    }
+  }
 });

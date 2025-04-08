@@ -365,3 +365,140 @@ button {
 footer {
   margin-top: 0.75rem;
 }
+
+/* Modal Styles */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.modal-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  width: 90%;
+  max-width: 480px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.modal-container.hidden .modal {
+  transform: translateY(20px);
+}
+
+.modal-header {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--light-text);
+  padding: 0.25rem;
+  min-width: auto;
+}
+
+.modal-close-btn:hover {
+  color: var(--text-color);
+}
+
+.modal-content {
+  padding: 1rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.modal-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.modal-content .step {
+  display: flex;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.step-number {
+  background-color: var(--primary-color);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.step-content {
+  flex-grow: 1;
+}
+
+.step-content h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.step-content p {
+  margin: 0;
+  color: var(--light-text);
+}
+
+.modal-footer {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-color);
+}
+
+.do-not-show-container {
+  display: flex;
+  align-items: center;
+}
+
+.do-not-show-container input {
+  margin-right: 0.5rem;
+}
+
+.do-not-show-container label {
+  font-size: 0.85rem;
+  color: var(--light-text);
+  cursor: pointer;
+}

@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up button listener
   stopRecordingButton.addEventListener('click', stopRecording);
   
+  // Apply theme if saved
+  applyThemeFromStorage();
+  
   // Start recording on page load
   startRecording();
   
@@ -50,6 +53,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// Apply theme from local storage
+function applyThemeFromStorage() {
+  // Check if theme is stored in localStorage
+  const theme = localStorage.getItem('theme') || 'system';
+  
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark-theme');
+  } else if (theme === 'system') {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark-theme');
+    }
+  }
+}
 
 // Start video recording
 function startRecording() {

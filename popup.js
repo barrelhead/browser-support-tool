@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Popup initialized - debug version');
+  console.log('Popup initialized - Browser Support Tool v1.3');
   
   // DOM Elements
   const clearDataBtn = document.getElementById('clearData');
@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const recordingStatus = document.getElementById('recordingStatus');
   const recordingTime = document.getElementById('recordingTime');
   const notification = document.getElementById('notification');
+  
+  // Modal Elements
+  const modalContainer = document.getElementById('modal-container');
+  const modalTitle = document.getElementById('modal-title');
+  const modalContent = document.getElementById('modal-content');
+  const modalCloseBtn = document.getElementById('modal-close');
+  const modalPrimaryBtn = document.getElementById('modal-primary-btn');
+  const doNotShowAgainCheckbox = document.getElementById('do-not-show-again');
   
   // Initialize theme system
   initTheme();
@@ -30,6 +38,184 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Adding inline onclick attribute');
     takeScreenshotBtn.setAttribute('onclick', "console.log('Inline onclick triggered'); this.style.backgroundColor='red';");
   }
+  
+  // Modal Management Functions
+  function showModal(type) {
+    // Check user preferences first
+    chrome.storage.local.get(['hideSupportBundleModal', 'hideRecordingModal'], function(prefs) {
+      // If user chose to hide this modal type, don't show it but still perform the action
+      if (type === 'har' && prefs.hideSupportBundleModal) {
+        console.log(`${type} modal hidden due to user preference, starting capture directly`);
+        startHarCapture();
+        return;
+      } 
+      else if (type === 'recording' && prefs.hideRecordingModal) {
+        console.log(`${type} modal hidden due to user preference, starting recording directly`);
+        startRecording();
+        return;
+      }
+      
+      // Set modal content based on type
+      if (type === 'har') {
+        setHarModalContent();
+      } else if (type === 'recording') {
+        setRecordingModalContent();
+      }
+      
+      // Show modal
+      modalContainer.classList.remove('hidden');
+      
+      // Store current modal type for reference
+      modalContainer.dataset.modalType = type;
+    });
+  }
+  
+  function hideModal() {
+    modalContainer.classList.add('hidden');
+    
+    // Check if "do not show again" was selected
+    if (doNotShowAgainCheckbox.checked) {
+      const modalType = modalContainer.dataset.modalType;
+      
+      if (modalType === 'har') {
+        chrome.storage.local.set({ 'hideSupportBundleModal': true });
+        console.log('User chose to hide Support Bundle modal in future');
+      } else if (modalType === 'recording') {
+        chrome.storage.local.set({ 'hideRecordingModal': true });
+        console.log('User chose to hide Recording modal in future');
+      }
+    }
+    
+    // Reset checkbox
+    doNotShowAgainCheckbox.checked = false;
+  }
+  
+  function setHarModalContent() {
+    modalTitle.textContent = 'Support Bundle Capture Guide';
+    
+    modalContent.innerHTML = `
+      <p>Support Bundle capture helps troubleshoot issues by recording system activity needed for analysis.</p>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Start the capture</h3>
+          <p>Click the "Start" button to begin recording system activity on the current tab.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Perform the actions to test</h3>
+          <p>Reproduce the issue or workflow you want to capture. All relevant system activity will be recorded.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Return to this tab</h3>
+          <p>Important: Support Bundle capture is specific to this tab. You must return to this tab to stop the capture.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Stop and download</h3>
+          <p>Click "Stop & Download" to save the Support Bundle file.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h3>Send to support</h3>
+          <p>Send your saved Support Bundle file to the support technician you're working with.</p>
+        </div>
+      </div>
+    `;
+    
+    modalPrimaryBtn.textContent = 'Begin Capture';
+    modalPrimaryBtn.onclick = function() {
+      hideModal();
+      startHarCapture();
+    };
+  }
+  
+  function setRecordingModalContent() {
+    modalTitle.textContent = 'Video Recording Guide';
+    
+    modalContent.innerHTML = `
+      <p>Screen recording captures your browser activity to help demonstrate issues or workflows.</p>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Allow screen sharing</h3>
+          <p>When prompted, select which screen, window, or tab you want to share for the recording.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Record your workflow</h3>
+          <p>Demonstrate the steps to reproduce an issue or walk through a process while recording.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Control the recording</h3>
+          <p>Use the "Stop Recording" button to end the capture early, or it will automatically stop after 5 minutes.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Save the video file</h3>
+          <p>When the recording stops, you'll be prompted to save the WebM video file to your computer.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h3>Send to support</h3>
+          <p>Send your saved video file to the support technician you're working with.</p>
+        </div>
+      </div>
+    `;
+    
+    modalPrimaryBtn.textContent = 'Begin Recording';
+    modalPrimaryBtn.onclick = function() {
+      hideModal();
+      startRecording();
+    };
+  }
+  
+  // Add event listeners for modal controls
+  modalCloseBtn.addEventListener('click', function() {
+    hideModal();
+  });
+  
+  // Close modal when clicking outside
+  modalContainer.addEventListener('click', function(e) {
+    if (e.target === modalContainer) {
+      hideModal();
+    }
+  });
+  
+  // Add Escape key support for closing the modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !modalContainer.classList.contains('hidden')) {
+      hideModal();
+    }
+  });
   
   // Define the screenshot function first
   function takeScreenshot() {
@@ -200,9 +386,10 @@ document.addEventListener('DOMContentLoaded', function() {
     clearBrowserData();
   };
   
+  // Updated: Show modal first, then start HAR capture
   startCaptureBtn.onclick = function() {
     console.log('Start capture button clicked');
-    startHarCapture();
+    showModal('har');
   };
   
   stopCaptureBtn.onclick = function() {
@@ -215,9 +402,10 @@ document.addEventListener('DOMContentLoaded', function() {
     takeScreenshot();
   };
   
+  // Updated: Show modal first, then start recording
   startRecordingBtn.onclick = function() {
     console.log('Start recording button clicked');
-    startRecording();
+    showModal('recording');
   };
   
   stopRecordingBtn.onclick = function() {
@@ -418,11 +606,11 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       if (response.success) {
-        console.log('HAR file downloaded successfully');
-        showNotification('HAR file downloaded successfully!', 'success');
+        console.log('Support Bundle downloaded successfully');
+        showNotification('Support Bundle downloaded successfully!', 'success');
       } else {
-        console.error('Error generating HAR file:', response.error);
-        showNotification('Error: ' + (response.error || 'Failed to generate HAR file'), 'error');
+        console.error('Error generating Support Bundle:', response.error);
+        showNotification('Error: ' + (response.error || 'Failed to generate Support Bundle'), 'error');
       }
     });
   }

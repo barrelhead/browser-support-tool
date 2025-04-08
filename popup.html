@@ -56,8 +56,8 @@
       </section>
 
       <section class="card" id="har-section">
-        <h2>Network Capture</h2>
-        <p>Capture network activity for troubleshooting.</p>
+        <h2>Support Bundle Capture</h2>
+        <p>Capture a bug in action to share with the support team!</p>
         <div class="buttons-container">
           <button id="startCapture" class="secondary-button">Start</button>
           <button id="stopCapture" class="secondary-button" disabled>Stop & Download</button>
@@ -88,6 +88,27 @@
       <!-- Footer remains, but notification moved under header -->
     </footer>
   </div>
+
+  <!-- Modal Component -->
+  <div id="modal-container" class="modal-container hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Guide</h2>
+        <button id="modal-close" class="modal-close-btn">&times;</button>
+      </div>
+      <div id="modal-content" class="modal-content">
+        <!-- Content will be dynamically set -->
+      </div>
+      <div class="modal-footer">
+        <div class="do-not-show-container">
+          <input type="checkbox" id="do-not-show-again">
+          <label for="do-not-show-again">Don't show this guide again</label>
+        </div>
+        <button id="modal-primary-btn" class="primary-button">Got it</button>
+      </div>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

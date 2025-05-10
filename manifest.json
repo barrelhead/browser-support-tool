@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Browser Support Tool",
-  "version": "1.3",
-  "description": "Chrome Extension for clearing cookies and cache, capture screenshots, videos and support bundles for simple debugging and troubleshooting",
+  "version": "1.5",
+  "description": "Chrome Extension for clearing cookies and cache, capture screenshots, videos, support bundles, and PDF tools for simple debugging and troubleshooting",
   "permissions": [
     "cookies",
     "browsingData",
@@ -11,9 +11,6 @@
     "tabs",
     "activeTab",
     "downloads"
-  ],
-  "host_permissions": [
-    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -33,7 +30,14 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["recorder.html", "recorder.js"],
+      "resources": [
+        "recorder.html",
+        "recorder.js",
+        "pdf-tools/pdf-tools.html",
+        "pdf-tools/pdf-tools.js",
+        "pdf-tools/pdf-tools.css",
+        "libs/*"
+      ],
       "matches": ["<all_urls>"]
     }
   ]

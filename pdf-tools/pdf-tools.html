@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Support Tool - PDF Tools</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="pdf-tools.css">
+</head>
+<body>
+  <div class="container pdf-tools-container">
+    <header>
+      <h1 id="tool-title">PDF Signing Tool</h1>
+      <div id="notification" class="notification hidden"></div>
+    </header>
+    
+    <!-- PDF Signing Tool Interface -->
+    <main id="sign-tool-layout" class="pdf-tools-layout">
+      <!-- PDF Upload Section -->
+      <section class="pdf-upload-section">
+        <h2>Upload Document</h2>
+        <div class="upload-container">
+          <input type="file" id="pdf-upload" accept=".pdf" />
+          <div class="upload-buttons">
+            <button id="upload-button" class="primary-button">Select PDF</button>
+            <button id="clear-pdf-button" class="secondary-button" disabled>Clear PDF</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- PDF Preview Section -->
+      <section class="pdf-preview-section">
+        <h2>Document Preview</h2>
+        <div class="pdf-controls">
+          <button id="prev-page" class="secondary-button">Previous</button>
+          <span id="page-info">Page 1 of 1</span>
+          <button id="next-page" class="secondary-button">Next</button>
+        </div>
+        <div id="pdf-container">
+          <div id="pdf-viewer"></div>
+        </div>
+      </section>
+      
+      <!-- Signature Tools Section -->
+      <section class="signature-tools-section">
+        <h2>Signature Tools</h2>
+        <div class="signature-tabs">
+          <button class="tab-button active" data-tab="draw">Draw</button>
+          <button class="tab-button" data-tab="type">Type</button>
+          <button class="tab-button" data-tab="saved">Saved</button>
+        </div>
+        
+        <div class="tab-content" id="draw-tab">
+          <canvas id="signature-pad"></canvas>
+          <div class="signature-actions">
+            <button id="clear-signature" class="secondary-button">Clear</button>
+            <button id="save-signature" class="primary-button">Save</button>
+          </div>
+        </div>
+        
+        <div class="tab-content hidden" id="type-tab">
+          <input type="text" id="typed-signature" placeholder="Type your signature" />
+          <select id="font-select">
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier">Courier</option>
+            <option value="Cursive">Cursive</option>
+          </select>
+          <button id="save-typed" class="primary-button">Save</button>
+        </div>
+        
+        <div class="tab-content hidden" id="saved-tab">
+          <div id="saved-signatures"></div>
+        </div>
+      </section>
+      
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button id="save-pdf" class="accent-button" disabled>Save Document</button>
+      </div>
+    </main>
+
+    <!-- PDF Merge Tool Interface -->
+    <main id="merge-tool-layout" class="pdf-tools-layout hidden">
+      <!-- PDF Upload Section -->
+      <!-- PDF Upload Section -->
+      <section class="pdf-upload-section">
+        <h2>Select PDFs to Merge</h2>
+        <div class="upload-container">
+          <input type="file" id="merge-pdf-upload" accept=".pdf" multiple style="display: none;" />
+          <button id="merge-upload-button" class="primary-button">Select PDFs to merge</button>
+        </div>
+      </section>
+      
+      <!-- PDF List Section -->
+      <section class="pdf-list-section">
+        <h2>PDF Files to Merge</h2>
+        <p class="hint-text">Drag to reorder. Files will be merged in the order shown below.</p>
+        <div id="pdf-list" class="pdf-list">
+          <div class="empty-list-message">No PDFs selected yet</div>
+        </div>
+      </section>
+      
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button id="merge-pdfs" class="accent-button" disabled>Merge PDFs</button>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Modal Component -->
+  <div id="modal-container" class="modal-container hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Guide</h2>
+        <button id="modal-close" class="modal-close-btn">&times;</button>
+      </div>
+      <div id="modal-content" class="modal-content">
+        <!-- Content will be dynamically set -->
+      </div>
+      <div class="modal-footer">
+        <div class="do-not-show-container">
+          <input type="checkbox" id="do-not-show-again">
+          <label for="do-not-show-again">Don't show this guide again</label>
+        </div>
+        <button id="modal-primary-btn" class="primary-button">Got it</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- No inline scripts - load everything through external files -->
+  <script src="../libs/pdf.min.js"></script>
+  <script src="../libs/pdf.worker.min.js"></script>
+  <script src="../libs/fabric.min.js"></script>
+  <script src="../libs/pdf-lib.min.js"></script>
+  <script src="pdf-tools.js" type="module"></script>
+</body>
+</html>

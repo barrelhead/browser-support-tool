@@ -9,10 +9,16 @@
 <body>
   <div class="container">
     <header>
-      <div class="theme-toggle">
-        <div class="theme-option light-theme-icon" data-theme="light" title="Light Theme">☀️</div>
-        <div class="theme-option dark-theme-icon" data-theme="dark" title="Dark Theme">🌙</div>
-        <div class="theme-option system-theme-icon" data-theme="system" title="System Theme">⚙️</div>
+      <div class="settings-container">
+        <button id="settings-btn" class="settings-btn" title="Settings">⚙️</button>
+        <div id="settings-menu" class="settings-menu hidden">
+          <h3>Theme Settings</h3>
+          <div class="theme-menu-options">
+            <div class="theme-menu-option" data-theme="light">☀️ Light Theme</div>
+            <div class="theme-menu-option" data-theme="dark">🌙 Dark Theme</div>
+            <div class="theme-menu-option" data-theme="system">💻 System Theme</div>
+          </div>
+        </div>
       </div>
       <h1>Browser Support Tool</h1>
       <!-- Notification moved under header for immediate visibility -->
@@ -20,68 +26,99 @@
     </header>
     
     <main class="grid-layout">
-      <section class="card" id="cleanup-section">
-        <h2>Clear Browser Data</h2>
-        <div class="checkbox-container">
-          <div class="option">
-            <input type="checkbox" id="cookies" checked>
-            <label for="cookies">Cookies</label>
-          </div>
-          <div class="option">
-            <input type="checkbox" id="cache" checked>
-            <label for="cache">Cache</label>
-          </div>
-          <div class="option">
-            <input type="checkbox" id="localStorage">
-            <label for="localStorage">Local Storage</label>
-          </div>
-          <div class="option">
-            <input type="checkbox" id="history">
-            <label for="history">History</label>
-          </div>
-        </div>
-        <div class="card-footer">
-          <div class="time-range">
-            <label for="timeRange">Time:</label>
-            <select id="timeRange">
-              <option value="hour">Last hour</option>
-              <option value="day">Last day</option>
-              <option value="week">Last week</option>
-              <option value="month" selected>Last month</option>
-              <option value="all">All time</option>
-            </select>
-          </div>
-          <button id="clearData" class="primary-button">Clear Data</button>
+      <!-- PDF Sign Tool Section -->
+      <section class="card" id="pdf-sign-section">
+        <h2>PDF Sign Tool</h2>
+        <p>Add signatures to PDF documents.</p>
+        <div class="pdf-buttons">
+          <button id="openPdfSignTool" class="accent-button">Sign PDF</button>
         </div>
       </section>
 
-      <section class="card" id="har-section">
-        <h2>Support Bundle Capture</h2>
-        <p>Capture a bug in action to share with the support team!</p>
-        <div class="buttons-container">
-          <button id="startCapture" class="secondary-button">Start</button>
-          <button id="stopCapture" class="secondary-button" disabled>Stop & Download</button>
-        </div>
-        <div id="captureStatus" class="status hidden">
-          <div class="spinner"></div>
-          <span>Capturing...</span>
+      <!-- PDF Merge Tool Section -->
+      <section class="card" id="pdf-merge-section">
+        <h2>PDF Merge Tool</h2>
+        <p>Combine multiple PDF files into one document.</p>
+        <div class="pdf-buttons">
+          <button id="openPdfMergeTool" class="accent-button">Merge PDFs</button>
         </div>
       </section>
+      
+      <!-- Visual Divider -->
+      <div class="divider"></div>
+      
+      <!-- Collapsible Support Tools Section -->
+      <div class="collapsible-section" id="support-tools-section">
+        <div class="collapsible-header">
+          <h2>Support Tools</h2>
+          <span class="toggle-icon">▼</span>
+        </div>
+        
+        <div class="collapsible-content">
+          <section class="card" id="cleanup-section">
+            <h2>Clear Browser Data</h2>
+            <div class="checkbox-container">
+              <div class="option">
+                <input type="checkbox" id="cookies" checked>
+                <label for="cookies">Cookies</label>
+              </div>
+              <div class="option">
+                <input type="checkbox" id="cache" checked>
+                <label for="cache">Cache</label>
+              </div>
+              <div class="option">
+                <input type="checkbox" id="localStorage">
+                <label for="localStorage">Local Storage</label>
+              </div>
+              <div class="option">
+                <input type="checkbox" id="history">
+                <label for="history">History</label>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="time-range">
+                <label for="timeRange">Time:</label>
+                <select id="timeRange">
+                  <option value="hour">Last hour</option>
+                  <option value="day">Last day</option>
+                  <option value="week">Last week</option>
+                  <option value="month" selected>Last month</option>
+                  <option value="all">All time</option>
+                </select>
+              </div>
+              <button id="clearData" class="primary-button">Clear Data</button>
+            </div>
+          </section>
 
-      <section class="card" id="screenshot-section">
-        <h2>Screen Capture</h2>
-        <p>Capture current page for support.</p>
-        <div class="capture-buttons">
-          <button id="takeScreenshot" class="accent-button">Take Screenshot</button>
-          <button id="startRecording" class="accent-button">Record Video</button>
-          <button id="stopRecording" class="accent-button hidden">Stop Recording</button>
+          <section class="card" id="har-section">
+            <h2>Support Bundle Capture</h2>
+            <p>Capture system activity for troubleshooting.</p>
+            <div class="buttons-container">
+              <button id="startCapture" class="secondary-button">Start</button>
+              <button id="stopCapture" class="secondary-button" disabled>Stop & Download</button>
+            </div>
+            <div id="captureStatus" class="status hidden">
+              <div class="spinner"></div>
+              <span>Capturing...</span>
+            </div>
+          </section>
+
+          <section class="card" id="screenshot-section">
+            <h2>Screen Capture</h2>
+            <p>Capture current page for support.</p>
+            <div class="capture-buttons">
+              <button id="takeScreenshot" class="accent-button">Take Screenshot</button>
+              <button id="startRecording" class="accent-button">Record Video</button>
+              <button id="stopRecording" class="accent-button hidden">Stop Recording</button>
+            </div>
+            <div id="recordingStatus" class="status hidden">
+              <div class="spinner recording-indicator"></div>
+              <span>Recording: </span>
+              <span id="recordingTime">00:00</span>
+            </div>
+          </section>
         </div>
-        <div id="recordingStatus" class="status hidden">
-          <div class="spinner recording-indicator"></div>
-          <span>Recording: </span>
-          <span id="recordingTime">00:00</span>
-        </div>
-      </section>
+      </div>
     </main>
     
     <footer>

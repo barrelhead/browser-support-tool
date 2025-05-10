@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Popup initialized - Browser Support Tool v1.3');
+  console.log('Popup initialized - Browser Support Tool v1.4');
+  
+  // Initialize collapsible section
+  initCollapsibleSection();
   
   // DOM Elements
   const clearDataBtn = document.getElementById('clearData');
@@ -12,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const recordingStatus = document.getElementById('recordingStatus');
   const recordingTime = document.getElementById('recordingTime');
   const notification = document.getElementById('notification');
+  const openPdfSignToolBtn = document.getElementById('openPdfSignTool');
+  const openPdfMergeToolBtn = document.getElementById('openPdfMergeTool');
   
   // Modal Elements
   const modalContainer = document.getElementById('modal-container');
@@ -23,6 +28,32 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize theme system
   initTheme();
+  
+  // Function to initialize collapsible section
+  function initCollapsibleSection() {
+    console.log('Initializing collapsible section');
+    const collapsibleHeader = document.querySelector('.collapsible-header');
+    const collapsibleSection = document.getElementById('support-tools-section');
+    
+    if (collapsibleHeader && collapsibleSection) {
+      // Check if section should be expanded based on stored preference
+      chrome.storage.local.get(['supportToolsExpanded'], function(result) {
+        if (result.supportToolsExpanded) {
+          collapsibleSection.classList.add('expanded');
+        }
+      });
+      
+      collapsibleHeader.addEventListener('click', function() {
+        collapsibleSection.classList.toggle('expanded');
+        
+        // Store the expanded state in chrome.storage.local
+        const isExpanded = collapsibleSection.classList.contains('expanded');
+        chrome.storage.local.set({ 'supportToolsExpanded': isExpanded });
+      });
+    } else {
+      console.error('Collapsible header or section not found');
+    }
+  }
   
   // Recording variables
   let recordingTimer = null;
@@ -37,6 +68,43 @@ document.addEventListener('DOMContentLoaded', function() {
   if (takeScreenshotBtn) {
     console.log('Adding inline onclick attribute');
     takeScreenshotBtn.setAttribute('onclick', "console.log('Inline onclick triggered'); this.style.backgroundColor='red';");
+  }
+  
+  // PDF Tools event handlers
+  if (openPdfSignToolBtn) {
+    openPdfSignToolBtn.onclick = function() {
+      console.log('Opening PDF Sign Tool');
+      openPdfTool('sign');
+    };
+  }
+  
+  if (openPdfMergeToolBtn) {
+    openPdfMergeToolBtn.onclick = function() {
+      console.log('Opening PDF Merge Tool');
+      openPdfTool('merge');
+    };
+  }
+  
+  // Function to open PDF tool in a new tab
+  function openPdfTool(toolType) {
+    // Create a new tab with our PDF tools page
+    let url = 'pdf-tools/pdf-tools.html';
+    if (toolType) {
+      url += `?tool=${toolType}`;
+    }
+    
+    chrome.tabs.create({
+      url: url,
+      active: true
+    }, function(tab) {
+      if (chrome.runtime.lastError) {
+        console.error('Error creating tab:', chrome.runtime.lastError);
+        showNotification('Error: Failed to open PDF tools', 'error');
+        return;
+      }
+      
+      console.log(`PDF ${toolType} tool opened in tab:`, tab.id);
+    });
   }
   
   // Modal Management Functions
@@ -654,33 +722,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Theme management functions
   function initTheme() {
+    // Set system as default if no theme is set
     const savedTheme = localStorage.getItem('theme') || 'system';
     applyTheme(savedTheme);
     
-    // Set active state on the correct theme toggle
-    document.querySelectorAll('.theme-option').forEach(option => {
-      if (option.dataset.theme === savedTheme) {
-        option.classList.add('active');
-      } else {
-        option.classList.remove('active');
-      }
-    });
-    
-    // Add event listeners to theme toggles
-    document.querySelectorAll('.theme-option').forEach(option => {
-      option.addEventListener('click', () => {
-        const theme = option.dataset.theme;
-        localStorage.setItem('theme', theme);
-        
-        // Update active state
-        document.querySelectorAll('.theme-option').forEach(opt => {
-          opt.classList.remove('active');
-        });
-        option.classList.add('active');
-        
-        applyTheme(theme);
-      });
-    });
+    // Set up settings menu for theme
+    setupSettingsMenu();
     
     // Listen for system theme changes
     if (window.matchMedia) {
@@ -712,6 +759,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     }
+  }
+  
+  // Setup settings menu
+  function setupSettingsMenu() {
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsMenu = document.getElementById('settings-menu');
+    
+    if (!settingsBtn || !settingsMenu) return;
+    
+    // Update the active theme in the menu
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    document.querySelectorAll('.theme-menu-option').forEach(option => {
+      if (option.dataset.theme === savedTheme) {
+        option.classList.add('active');
+      } else {
+        option.classList.remove('active');
+      }
+    });
+    
+    // Toggle settings menu
+    settingsBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      settingsMenu.classList.toggle('hidden');
+    });
+    
+    // Close settings menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
+        settingsMenu.classList.add('hidden');
+      }
+    });
+    
+    // Theme options in settings menu
+    document.querySelectorAll('.theme-menu-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const theme = option.dataset.theme;
+        localStorage.setItem('theme', theme);
+        
+        // Update active state
+        document.querySelectorAll('.theme-menu-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+        option.classList.add('active');
+        
+        applyTheme(theme);
+        
+        // Hide menu after selection
+        settingsMenu.classList.add('hidden');
+      });
+    });
   }
 
   function applyTheme(theme) {

@@ -8,55 +8,85 @@
 </head>
 <body>
   <div class="container">
+
+    <!-- ── Header ──────────────────────────────────────────── -->
     <header>
-      <div class="settings-container">
-        <button id="settings-btn" class="settings-btn" title="Settings">⚙️</button>
-        <div id="settings-menu" class="settings-menu hidden">
-          <h3>Theme Settings</h3>
-          <div class="theme-menu-options">
-            <div class="theme-menu-option" data-theme="light">☀️ Light Theme</div>
-            <div class="theme-menu-option" data-theme="dark">🌙 Dark Theme</div>
-            <div class="theme-menu-option" data-theme="system">💻 System Theme</div>
+      <div class="header-left">
+        <div class="app-icon">
+          <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h4a1 1 0 010 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h4a1 1 0 010 2H4a1 1 0 01-1-1zm8-4a1 1 0 011-1h4a1 1 0 010 2h-4a1 1 0 01-1-1zm1 3a1 1 0 100 2h4a1 1 0 000-2h-4z"/>
+          </svg>
+        </div>
+        <h1>Browser Support Tool</h1>
+      </div>
+    </header>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- ── Main ────────────────────────────────────────────── -->
+    <div class="grid-layout">
+
+      <!-- PDF Tools -->
+      <div>
+        <p class="section-label">PDF Tools</p>
+        <div class="pdf-cards-row">
+
+          <div class="pdf-tool-card pdf-tool-card--purple">
+            <div class="card-title">
+              <span class="card-icon card-icon--purple">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                </svg>
+              </span>
+              Sign PDF
+            </div>
+            <p class="card-desc">Add your signature to any PDF document.</p>
+            <button id="openPdfSignTool" class="btn-primary btn-full">Open →</button>
           </div>
+
+          <div class="pdf-tool-card pdf-tool-card--magenta">
+            <div class="card-title">
+              <span class="card-icon card-icon--magenta">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="4" width="6" height="6" rx="1"/>
+                  <rect x="14" y="4" width="6" height="6" rx="1"/>
+                  <rect x="4" y="14" width="6" height="6" rx="1"/>
+                  <rect x="14" y="14" width="6" height="6" rx="1"/>
+                </svg>
+              </span>
+              Merge PDFs
+            </div>
+            <p class="card-desc">Combine multiple PDF files into one.</p>
+            <button id="openPdfMergeTool" class="btn-primary btn-full">Open →</button>
+          </div>
+
         </div>
       </div>
-      <h1>Browser Support Tool</h1>
-      <!-- Notification moved under header for immediate visibility -->
-      <div id="notification" class="notification hidden"></div>
-    </header>
-    
-    <main class="grid-layout">
-      <!-- PDF Sign Tool Section -->
-      <section class="card" id="pdf-sign-section">
-        <h2>PDF Sign Tool</h2>
-        <p>Add signatures to PDF documents.</p>
-        <div class="pdf-buttons">
-          <button id="openPdfSignTool" class="accent-button">Sign PDF</button>
-        </div>
-      </section>
 
-      <!-- PDF Merge Tool Section -->
-      <section class="card" id="pdf-merge-section">
-        <h2>PDF Merge Tool</h2>
-        <p>Combine multiple PDF files into one document.</p>
-        <div class="pdf-buttons">
-          <button id="openPdfMergeTool" class="accent-button">Merge PDFs</button>
-        </div>
-      </section>
-      
-      <!-- Visual Divider -->
       <div class="divider"></div>
-      
-      <!-- Collapsible Support Tools Section -->
+
+      <!-- Support Tools — collapsible -->
       <div class="collapsible-section" id="support-tools-section">
         <div class="collapsible-header">
           <h2>Support Tools</h2>
           <span class="toggle-icon">▼</span>
         </div>
-        
+
         <div class="collapsible-content">
+
           <section class="card" id="cleanup-section">
-            <h2>Clear Browser Data</h2>
+            <div class="card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                  <path d="M10 11v6M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                </svg>
+              </span>
+              Clear Browser Data
+            </div>
             <div class="checkbox-container">
               <div class="option">
                 <input type="checkbox" id="cookies" checked>
@@ -86,60 +116,76 @@
                   <option value="all">All time</option>
                 </select>
               </div>
-              <button id="clearData" class="primary-button">Clear Data</button>
+              <button id="clearData" class="primary-button">Clear</button>
             </div>
           </section>
 
           <section class="card" id="har-section">
-            <h2>Support Bundle Capture</h2>
-            <p>Capture system activity for troubleshooting.</p>
+            <div class="card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 12.55a11 11 0 0114.08 0"/>
+                  <path d="M1.42 9a16 16 0 0121.16 0"/>
+                  <path d="M8.53 16.11a6 6 0 016.95 0"/>
+                  <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              </span>
+              Support Bundle
+            </div>
+            <p class="card-desc">Record network activity for troubleshooting.</p>
             <div class="buttons-container">
               <button id="startCapture" class="secondary-button">Start</button>
-              <button id="stopCapture" class="secondary-button" disabled>Stop & Download</button>
+              <button id="stopCapture" class="secondary-button" disabled>Stop & Save</button>
             </div>
             <div id="captureStatus" class="status hidden">
               <div class="spinner"></div>
-              <span>Capturing...</span>
+              <span>Capturing…</span>
             </div>
           </section>
 
           <section class="card" id="screenshot-section">
-            <h2>Screen Capture</h2>
-            <p>Capture current page for support.</p>
+            <div class="card-title">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </span>
+              Screen Capture
+            </div>
+            <p class="card-desc">Screenshot or record your screen.</p>
             <div class="capture-buttons">
-              <button id="takeScreenshot" class="accent-button">Take Screenshot</button>
-              <button id="startRecording" class="accent-button">Record Video</button>
-              <button id="stopRecording" class="accent-button hidden">Stop Recording</button>
+              <button id="takeScreenshot" class="secondary-button">Screenshot</button>
+              <button id="startRecording" class="secondary-button">Record</button>
+              <button id="stopRecording" class="btn-danger hidden">■ Stop</button>
             </div>
             <div id="recordingStatus" class="status hidden">
-              <div class="spinner recording-indicator"></div>
-              <span>Recording: </span>
+              <div class="recording-indicator"></div>
+              <span>Recording</span>
               <span id="recordingTime">00:00</span>
             </div>
           </section>
+
         </div>
       </div>
-    </main>
-    
-    <footer>
-      <!-- Footer remains, but notification moved under header -->
-    </footer>
+
+    </div>
+
+    <footer></footer>
   </div>
 
-  <!-- Modal Component -->
+  <!-- Modal -->
   <div id="modal-container" class="modal-container hidden">
     <div class="modal">
       <div class="modal-header">
         <h2 id="modal-title">Guide</h2>
         <button id="modal-close" class="modal-close-btn">&times;</button>
       </div>
-      <div id="modal-content" class="modal-content">
-        <!-- Content will be dynamically set -->
-      </div>
+      <div id="modal-content" class="modal-content"></div>
       <div class="modal-footer">
         <div class="do-not-show-container">
           <input type="checkbox" id="do-not-show-again">
-          <label for="do-not-show-again">Don't show this guide again</label>
+          <label for="do-not-show-again">Don't show again</label>
         </div>
         <button id="modal-primary-btn" class="primary-button">Got it</button>
       </div>

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Popup initialized - Browser Support Tool v1.4');
+  console.log('Popup initialized - Browser Support Tool v1.7.3');
   
   // Initialize collapsible section
   initCollapsibleSection();
@@ -25,9 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const modalCloseBtn = document.getElementById('modal-close');
   const modalPrimaryBtn = document.getElementById('modal-primary-btn');
   const doNotShowAgainCheckbox = document.getElementById('do-not-show-again');
-  
-  // Initialize theme system
-  initTheme();
   
   // Function to initialize collapsible section
   function initCollapsibleSection() {
@@ -720,119 +717,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Theme management functions
-  function initTheme() {
-    // Set system as default if no theme is set
-    const savedTheme = localStorage.getItem('theme') || 'system';
-    applyTheme(savedTheme);
-    
-    // Set up settings menu for theme
-    setupSettingsMenu();
-    
-    // Listen for system theme changes
-    if (window.matchMedia) {
-      const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      
-      // Set initial state if using system theme
-      if (savedTheme === 'system') {
-        applyThemeBasedOnSystem(colorSchemeQuery.matches);
-      }
-      
-      // Add listener for system theme changes
-      try {
-        // Chrome & Firefox
-        colorSchemeQuery.addEventListener('change', (e) => {
-          if (localStorage.getItem('theme') === 'system') {
-            applyThemeBasedOnSystem(e.matches);
-          }
-        });
-      } catch (e1) {
-        try {
-          // Safari
-          colorSchemeQuery.addListener((e) => {
-            if (localStorage.getItem('theme') === 'system') {
-              applyThemeBasedOnSystem(e.matches);
-            }
-          });
-        } catch (e2) {
-          console.error('Could not add media query listener:', e2);
-        }
-      }
-    }
-  }
-  
-  // Setup settings menu
-  function setupSettingsMenu() {
-    const settingsBtn = document.getElementById('settings-btn');
-    const settingsMenu = document.getElementById('settings-menu');
-    
-    if (!settingsBtn || !settingsMenu) return;
-    
-    // Update the active theme in the menu
-    const savedTheme = localStorage.getItem('theme') || 'system';
-    document.querySelectorAll('.theme-menu-option').forEach(option => {
-      if (option.dataset.theme === savedTheme) {
-        option.classList.add('active');
-      } else {
-        option.classList.remove('active');
-      }
-    });
-    
-    // Toggle settings menu
-    settingsBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      settingsMenu.classList.toggle('hidden');
-    });
-    
-    // Close settings menu when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
-        settingsMenu.classList.add('hidden');
-      }
-    });
-    
-    // Theme options in settings menu
-    document.querySelectorAll('.theme-menu-option').forEach(option => {
-      option.addEventListener('click', () => {
-        const theme = option.dataset.theme;
-        localStorage.setItem('theme', theme);
-        
-        // Update active state
-        document.querySelectorAll('.theme-menu-option').forEach(opt => {
-          opt.classList.remove('active');
-        });
-        option.classList.add('active');
-        
-        applyTheme(theme);
-        
-        // Hide menu after selection
-        settingsMenu.classList.add('hidden');
-      });
-    });
-  }
-
-  function applyTheme(theme) {
-    console.log('Applying theme:', theme);
-    
-    if (theme === 'system') {
-      // Check system preference
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        applyThemeBasedOnSystem(true);
-      } else {
-        applyThemeBasedOnSystem(false);
-      }
-    } else if (theme === 'dark') {
-      document.documentElement.classList.add('dark-theme');
-    } else {
-      document.documentElement.classList.remove('dark-theme');
-    }
-  }
-
-  function applyThemeBasedOnSystem(isDark) {
-    if (isDark) {
-      document.documentElement.classList.add('dark-theme');
-    } else {
-      document.documentElement.classList.remove('dark-theme');
-    }
-  }
 });
